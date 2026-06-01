@@ -250,40 +250,75 @@ function StaffLookup() {
     }
   }
 
+  function formatDate(dateValue) {
+    if (!dateValue) {
+      return "N/A";
+    }
+
+    const date = new Date(dateValue);
+
+    if (isNaN(date.getTime())) {
+      return dateValue;
+    }
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+
   function renderWaiverCard(waiver) {
     return (
       <div className="waiver-result" key={waiver.id}>
-        <h2>Waiver Found</h2>
+        <div className="waiver-card-header">
+          <div>
+            <h2>
+              {waiver.participantFirstName} {waiver.participantLastName}
+            </h2>
+            <p className="waiver-code">{waiver.confirmationCode}</p>
+          </div>
 
-        <div className="status-row">
           <span className={waiver.active ? "status valid" : "status invalid"}>
             {waiver.active ? "Active" : "Inactive"}
           </span>
         </div>
 
-        <p>
-          <strong>Confirmation Code:</strong> {waiver.confirmationCode}
-        </p>
-        <p>
-          <strong>Parent/Guardian:</strong> {waiver.parentFirstName}{" "}
-          {waiver.parentLastName}
-        </p>
-        <p>
-          <strong>Participant:</strong> {waiver.participantFirstName}{" "}
-          {waiver.participantLastName}
-        </p>
-        <p>
-          <strong>Email:</strong> {waiver.email}
-        </p>
-        <p>
-          <strong>Phone:</strong> {waiver.phone}
-        </p>
-        <p>
-          <strong>Signed At:</strong> {waiver.signedAt}
-        </p>
-        <p>
-          <strong>Expires At:</strong> {waiver.expiresAt}
-        </p>
+        <div className="waiver-info-grid">
+          <div className="info-item">
+            <span className="info-label">Parent / Guardian</span>
+            <span className="info-value">
+              {waiver.parentFirstName} {waiver.parentLastName}
+            </span>
+          </div>
+
+          <div className="info-item">
+            <span className="info-label">Participant</span>
+            <span className="info-value">
+              {waiver.participantFirstName} {waiver.participantLastName}
+            </span>
+          </div>
+
+          <div className="info-item">
+            <span className="info-label">Email</span>
+            <span className="info-value">{waiver.email}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="info-label">Phone</span>
+            <span className="info-value">{waiver.phone}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="info-label">Signed</span>
+            <span className="info-value">{formatDate(waiver.signedAt)}</span>
+          </div>
+
+          <div className="info-item">
+            <span className="info-label">Expires</span>
+            <span className="info-value">{formatDate(waiver.expiresAt)}</span>
+          </div>
+        </div>
       </div>
     );
   }
