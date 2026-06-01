@@ -240,4 +240,24 @@ button:disabled {
     background: #fee2e2;
     color: #991b1b;
   }
+
+  select {
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+  }
+
+  select:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+  }
+
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
 }

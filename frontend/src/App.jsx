@@ -198,35 +198,94 @@ function WaiverForm() {
 }
 
 function StaffLookup() {
-  const [confirmationCode, setConfirmationCode] = useState("");
-  const [waiver, setWaiver] = useState(null);
+  const [searchType, setSearchType] = useState("code");
+  const [searchValue, setSearchValue] = useState("");
+  const [waivers, setWaivers] = useState([]);
+  const [singleWaiver, setSingleWaiver] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleLookup(event) {
     event.preventDefault();
 
-    setWaiver(null);
+    setWaivers([]);
+    setSingleWaiver(null);
     setError("");
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/waivers/code/${confirmationCode}`
-      );
+      let url = "";
+
+      if (searchType === "code") {
+        url = `http://localhost:8080/api/waivers/code/${searchValue}`;
+      } else if (searchType === "parent") {
+        url = `http://localhost:8080/api/waivers/search/parent?lastName=${searchValue}`;
+      } else {
+        url = `http://localhost:8080/api/waivers/search/participant?lastName=${searchValue}`;
+      }
+
+      const response = await fetch(url);
 
       if (!response.ok) {
-        setError("No waiver found with that confirmation code.");
+        setError("No waiver found for that search.");
         return;
       }
 
       const data = await response.json();
-      setWaiver(data);
+
+      if (searchType === "code") {
+        setSingleWaiver(data);
+      } else {
+        if (data.length === 0) {
+          setError("No waivers found for that name.");
+          return;
+        }
+
+        setWaivers(data);
+      }
     } catch (error) {
       setError("Something went wrong. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
+  }
+
+  function renderWaiverCard(waiver) {
+    return (
+      <div className="waiver-result" key={waiver.id}>
+        <h2>Waiver Found</h2>
+
+        <div className="status-row">
+          <span className={waiver.active ? "status valid" : "status invalid"}>
+            {waiver.active ? "Active" : "Inactive"}
+          </span>
+        </div>
+
+        <p>
+          <strong>Confirmation Code:</strong> {waiver.confirmationCode}
+        </p>
+        <p>
+          <strong>Parent/Guardian:</strong> {waiver.parentFirstName}{" "}
+          {waiver.parentLastName}
+        </p>
+        <p>
+          <strong>Participant:</strong> {waiver.participantFirstName}{" "}
+          {waiver.participantLastName}
+        </p>
+        <p>
+          <strong>Email:</strong> {waiver.email}
+        </p>
+        <p>
+          <strong>Phone:</strong> {waiver.phone}
+        </p>
+        <p>
+          <strong>Signed At:</strong> {waiver.signedAt}
+        </p>
+        <p>
+          <strong>Expires At:</strong> {waiver.expiresAt}
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -235,54 +294,49 @@ function StaffLookup() {
 
       <form onSubmit={handleLookup} className="lookup-form">
         <label>
-          Confirmation Code
+          Search Type
+          <select
+            value={searchType}
+            onChange={(event) => {
+              setSearchType(event.target.value);
+              setSearchValue("");
+              setError("");
+              setWaivers([]);
+              setSingleWaiver(null);
+            }}
+          >
+            <option value="code">Confirmation Code</option>
+            <option value="parent">Parent Last Name</option>
+            <option value="participant">Participant Last Name</option>
+          </select>
+        </label>
+
+        <label>
+          Search Value
           <input
-            value={confirmationCode}
-            onChange={(event) => setConfirmationCode(event.target.value)}
-            placeholder="Example: LIW-8F3A92"
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.target.value)}
+            placeholder={
+              searchType === "code"
+                ? "Example: LIW-8F3A92"
+                : "Example: Drake"
+            }
           />
         </label>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Searching..." : "Search Waiver"}
+        <button type="submit" disabled={loading || searchValue.trim() === ""}>
+          {loading ? "Searching..." : "Search Waivers"}
         </button>
       </form>
 
       {error && <div className="error-box">{error}</div>}
 
-      {waiver && (
-        <div className="waiver-result">
-          <h2>Waiver Found</h2>
+      {singleWaiver && renderWaiverCard(singleWaiver)}
 
-          <div className="status-row">
-            <span className={waiver.active ? "status valid" : "status invalid"}>
-              {waiver.active ? "Active" : "Inactive"}
-            </span>
-          </div>
-
-          <p>
-            <strong>Confirmation Code:</strong> {waiver.confirmationCode}
-          </p>
-          <p>
-            <strong>Parent/Guardian:</strong> {waiver.parentFirstName}{" "}
-            {waiver.parentLastName}
-          </p>
-          <p>
-            <strong>Participant:</strong> {waiver.participantFirstName}{" "}
-            {waiver.participantLastName}
-          </p>
-          <p>
-            <strong>Email:</strong> {waiver.email}
-          </p>
-          <p>
-            <strong>Phone:</strong> {waiver.phone}
-          </p>
-          <p>
-            <strong>Signed At:</strong> {waiver.signedAt}
-          </p>
-          <p>
-            <strong>Expires At:</strong> {waiver.expiresAt}
-          </p>
+      {waivers.length > 0 && (
+        <div className="results-list">
+          <h2>{waivers.length} Result(s) Found</h2>
+          {waivers.map((waiver) => renderWaiverCard(waiver))}
         </div>
       )}
     </div>
