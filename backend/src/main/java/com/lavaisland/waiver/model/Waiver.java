@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import jakarta.validation.constraints.AssertTrue;
 
 @Entity
 @Table(name = "waivers")
@@ -31,6 +32,9 @@ public class Waiver {
 
     @NotBlank(message = "Participant last name is required")
     private String participantLastName;
+
+    @AssertTrue(message = "You must agree to the waiver terms")
+    private boolean agreedToTerms;
 
     private boolean signed;
 
@@ -136,5 +140,13 @@ public class Waiver {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isAgreedToTerms() {
+        return agreedToTerms;
+    }
+
+    public void setAgreedToTerms(boolean agreedToTerms) {
+        this.agreedToTerms = agreedToTerms;
     }
 }

@@ -46,6 +46,7 @@ function WaiverForm() {
     phone: "",
     participantFirstName: "",
     participantLastName: "",
+    agreedToTerms: false,
   });
 
   const [errors, setErrors] = useState({});
@@ -53,11 +54,11 @@ function WaiverForm() {
   const [loading, setLoading] = useState(false);
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const { name, value, type, checked } = event.target;
 
     setFormData((previousData) => ({
       ...previousData,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   }
 
@@ -77,7 +78,13 @@ function WaiverForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
 
       if (!response.ok) {
         setErrors(data);
@@ -93,6 +100,7 @@ function WaiverForm() {
         phone: "",
         participantFirstName: "",
         participantLastName: "",
+        agreedToTerms: false,
       });
     } catch (error) {
       setErrors({
@@ -183,10 +191,20 @@ function WaiverForm() {
         </div>
 
         <div className="agreement">
-          <p>
-            By submitting this form, I confirm that the information provided is
-            accurate and that I agree to the Lava Island waiver terms.
-          </p>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              name="agreedToTerms"
+              checked={formData.agreedToTerms}
+              onChange={handleChange}
+            />
+            <span>
+              I confirm that the information provided is accurate and that I agree to
+              the Lava Island waiver terms.
+            </span>
+          </label>
+
+          {errors.agreedToTerms && <span>{errors.agreedToTerms}</span>}
         </div>
 
         <button type="submit" disabled={loading}>
