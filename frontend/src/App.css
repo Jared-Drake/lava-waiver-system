@@ -454,4 +454,108 @@ button:disabled {
     font-size: 14px;
     font-weight: 700;
   }
+
+  /* Lava Island branding polish */
+
+  body {
+    background:
+      radial-gradient(circle at top left, rgba(249, 115, 22, 0.28), transparent 34%),
+      radial-gradient(circle at bottom right, rgba(37, 99, 235, 0.24), transparent 32%),
+      #111827;
+  }
+
+  .card {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+
+  .lava-header {
+    background: linear-gradient(135deg, #fff7ed, #ffffff 55%, #eff6ff);
+    margin: -32px -32px 28px;
+    padding: 34px 32px 28px;
+    border-bottom: 1px solid #fed7aa;
+  }
+
+  .logo-badge {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f97316, #dc2626);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    box-shadow: 0 12px 28px rgba(249, 115, 22, 0.35);
+  }
+
+  .header-tags {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .header-tags span {
+    background: #ffedd5;
+    color: #9a3412;
+    border: 1px solid #fed7aa;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .tabs {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .tab {
+    flex: 1;
+  }
+
+  .section-title {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-left: 5px solid #f97316;
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: left;
+  }
+
+  .participant-card {
+    background: linear-gradient(135deg, #fff7ed, #ffffff);
+    border: 2px solid #fed7aa;
+  }
+
+  .success-box {
+    border: 2px solid #10b981;
+    box-shadow: 0 10px 28px rgba(16, 185, 129, 0.15);
+  }
+
+  .error-box {
+    border: 2px solid #ef4444;
+  }
+
+  @media (max-width: 700px) {
+    .lava-header {
+      margin: -22px -22px 24px;
+      padding: 28px 22px 24px;
+    }
+
+    .logo-badge {
+      width: 56px;
+      height: 56px;
+      font-size: 30px;
+    }
+
+    .header-tags {
+      justify-content: center;
+    }
+  }
 }
