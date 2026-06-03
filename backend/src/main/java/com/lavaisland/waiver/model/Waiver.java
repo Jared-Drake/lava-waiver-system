@@ -6,6 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "waivers")
@@ -27,14 +32,17 @@ public class Waiver {
     @NotBlank(message = "Phone number is required")
     private String phone;
 
-    @NotBlank(message = "Participant first name is required")
     private String participantFirstName;
 
-    @NotBlank(message = "Participant last name is required")
     private String participantLastName;
 
     @AssertTrue(message = "You must agree to the waiver terms")
     private boolean agreedToTerms;
+
+    @Valid
+    @Size(min = 1, message = "At least one participant is required")
+    @OneToMany(mappedBy = "waiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participant> participants = new ArrayList<>();
 
     private boolean signed;
 
@@ -148,5 +156,13 @@ public class Waiver {
 
     public void setAgreedToTerms(boolean agreedToTerms) {
         this.agreedToTerms = agreedToTerms;
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
     }
 }

@@ -24,6 +24,10 @@ public class WaiverService {
         waiver.setActive(true);
         waiver.setConfirmationCode(generateConfirmationCode());
 
+        if (waiver.getParticipants() != null) {
+            waiver.getParticipants().forEach(participant -> participant.setWaiver(waiver));
+        }
+
         return waiverRepository.save(waiver);
     }
 
@@ -43,7 +47,7 @@ public class WaiverService {
     }
 
     public List<Waiver> searchByParticipantLastName(String lastName) {
-        return waiverRepository.findByParticipantLastNameContainingIgnoreCase(lastName);
+        return waiverRepository.findDistinctByParticipantsLastNameContainingIgnoreCase(lastName);
     }
 
     public Waiver findByConfirmationCode(String confirmationCode) {

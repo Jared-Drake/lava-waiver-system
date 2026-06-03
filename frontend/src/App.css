@@ -385,4 +385,73 @@ button:disabled {
   .clear-button:hover {
     background: #1f2937;
   }
+
+  .participants-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .participant-card {
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .participant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .participant-header h3 {
+    margin: 0;
+    color: #111827;
+  }
+
+  .remove-button {
+    background: #dc2626;
+    padding: 8px 12px;
+    font-size: 14px;
+    margin-top: 0;
+  }
+
+  .remove-button:hover {
+    background: #b91c1c;
+  }
+
+  .success-participant-list {
+    margin: 8px 0 0;
+    padding-left: 20px;
+  }
+
+  .participant-info-item {
+    grid-column: 1 / -1;
+  }
+
+  .participants-display-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .participant-display-row {
+    background: #f8fafc;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .dob-value {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+  }
 }

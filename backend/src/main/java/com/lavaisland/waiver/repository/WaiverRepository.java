@@ -12,5 +12,7 @@ public interface WaiverRepository extends JpaRepository<Waiver, Long> {
 
     List<Waiver> findByParticipantLastNameContainingIgnoreCase(String participantLastName);
 
+    List<Waiver> findDistinctByParticipantsLastNameContainingIgnoreCase(String lastName);
+
     Optional<Waiver> findByConfirmationCode(String confirmationCode);
 }

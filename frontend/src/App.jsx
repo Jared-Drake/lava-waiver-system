@@ -44,9 +44,14 @@ function WaiverForm() {
     parentLastName: "",
     email: "",
     phone: "",
-    participantFirstName: "",
-    participantLastName: "",
     agreedToTerms: false,
+    participants: [
+      {
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+      },
+    ],
   });
 
   const [errors, setErrors] = useState({});
@@ -59,6 +64,45 @@ function WaiverForm() {
     setFormData((previousData) => ({
       ...previousData,
       [name]: type === "checkbox" ? checked : value,
+    }));
+  }
+
+  function handleParticipantChange(index, event) {
+    const { name, value } = event.target;
+
+    setFormData((previousData) => {
+      const updatedParticipants = [...previousData.participants];
+
+      updatedParticipants[index] = {
+        ...updatedParticipants[index],
+        [name]: value,
+      };
+
+      return {
+        ...previousData,
+        participants: updatedParticipants,
+      };
+    });
+  }
+
+  function addParticipant() {
+    setFormData((previousData) => ({
+      ...previousData,
+      participants: [
+        ...previousData.participants,
+        {
+          firstName: "",
+          lastName: "",
+          dateOfBirth: "",
+        },
+      ],
+    }));
+  }
+
+  function removeParticipant(index) {
+    setFormData((previousData) => ({
+      ...previousData,
+      participants: previousData.participants.filter((_, i) => i !== index),
     }));
   }
 
@@ -98,9 +142,14 @@ function WaiverForm() {
         parentLastName: "",
         email: "",
         phone: "",
-        participantFirstName: "",
-        participantLastName: "",
         agreedToTerms: false,
+        participants: [
+          {
+            firstName: "",
+            lastName: "",
+            dateOfBirth: "",
+          },
+        ],
       });
     } catch (error) {
       setErrors({
@@ -126,10 +175,16 @@ function WaiverForm() {
           </div>
 
           <div className="success-details">
-            <p>
-              <strong>Participant:</strong> {submittedWaiver.participantFirstName}{" "}
-              {submittedWaiver.participantLastName}
-            </p>
+            <div>
+              <strong>Participants:</strong>
+              <ul className="success-participant-list">
+                {submittedWaiver.participants?.map((participant) => (
+                  <li key={participant.id}>
+                    {participant.firstName} {participant.lastName}
+                  </li>
+                ))}
+              </ul>
+            </div>
             <p>
               <strong>Expires:</strong> {submittedWaiver.expiresAt}
             </p>
@@ -191,31 +246,61 @@ function WaiverForm() {
 
         <div className="section-title">Participant Information</div>
 
-        <div className="grid">
-          <label>
-            Participant First Name
-            <input
-              name="participantFirstName"
-              value={formData.participantFirstName}
-              onChange={handleChange}
-            />
-            {errors.participantFirstName && (
-              <span>{errors.participantFirstName}</span>
-            )}
-          </label>
+        <div className="participants-list">
+          {formData.participants.map((participant, index) => (
+            <div className="participant-card" key={index}>
+              <div className="participant-header">
+                <h3>Participant {index + 1}</h3>
 
-          <label>
-            Participant Last Name
-            <input
-              name="participantLastName"
-              value={formData.participantLastName}
-              onChange={handleChange}
-            />
-            {errors.participantLastName && (
-              <span>{errors.participantLastName}</span>
-            )}
-          </label>
+                {formData.participants.length > 1 && (
+                  <button
+                    type="button"
+                    className="remove-button"
+                    onClick={() => removeParticipant(index)}
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+
+              <div className="grid">
+                <label>
+                  First Name
+                  <input
+                    name="firstName"
+                    value={participant.firstName}
+                    onChange={(event) => handleParticipantChange(index, event)}
+                  />
+                </label>
+
+                <label>
+                  Last Name
+                  <input
+                    name="lastName"
+                    value={participant.lastName}
+                    onChange={(event) => handleParticipantChange(index, event)}
+                  />
+                </label>
+              </div>
+
+              <label>
+                Date of Birth
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={participant.dateOfBirth}
+                  onChange={(event) => handleParticipantChange(index, event)}
+                />
+              </label>
+            </div>
+          ))}
         </div>
+
+        {errors.participants && <span>{errors.participants}</span>}
+
+        <button type="button" className="secondary-button" onClick={addParticipant}>
+          Add Another Participant
+        </button>
 
         <div className="agreement">
           <label className="checkbox-label">
@@ -321,7 +406,7 @@ function StaffLookup() {
         <div className="waiver-card-header">
           <div>
             <h2>
-              {waiver.participantFirstName} {waiver.participantLastName}
+              {waiver.parentFirstName} {waiver.parentLastName}
             </h2>
             <p className="waiver-code">{waiver.confirmationCode}</p>
           </div>
@@ -339,11 +424,20 @@ function StaffLookup() {
             </span>
           </div>
 
-          <div className="info-item">
-            <span className="info-label">Participant</span>
-            <span className="info-value">
-              {waiver.participantFirstName} {waiver.participantLastName}
-            </span>
+          <div className="info-item participant-info-item">
+            <span className="info-label">Participants</span>
+            <div className="participants-display-list">
+              {waiver.participants?.map((participant) => (
+                <div className="participant-display-row" key={participant.id}>
+                  <span className="info-value">
+                    {participant.firstName} {participant.lastName}
+                  </span>
+                  <span className="dob-value">
+                    DOB: {formatDate(participant.dateOfBirth)}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="info-item">
