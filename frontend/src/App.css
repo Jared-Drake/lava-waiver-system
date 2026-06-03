@@ -365,4 +365,24 @@ button:disabled {
     color: #374151;
     font-size: 15px;
   }
+
+  .loading-box {
+    background: #eff6ff;
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 700;
+  }
+
+  .clear-button {
+    background: #374151;
+    align-self: flex-end;
+    margin-top: 0;
+  }
+
+  .clear-button:hover {
+    background: #1f2937;
+  }
 }

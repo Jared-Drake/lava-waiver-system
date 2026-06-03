@@ -258,15 +258,17 @@ function StaffLookup() {
     setError("");
     setLoading(true);
 
+    const cleanSearchValue = searchValue.trim();
+
     try {
       let url = "";
 
       if (searchType === "code") {
-        url = `http://localhost:8080/api/waivers/code/${searchValue}`;
+        url = `http://localhost:8080/api/waivers/code/${cleanSearchValue.toUpperCase()}`;
       } else if (searchType === "parent") {
-        url = `http://localhost:8080/api/waivers/search/parent?lastName=${searchValue}`;
+        url = `http://localhost:8080/api/waivers/search/parent?lastName=${cleanSearchValue}`;
       } else {
-        url = `http://localhost:8080/api/waivers/search/participant?lastName=${searchValue}`;
+        url = `http://localhost:8080/api/waivers/search/participant?lastName=${cleanSearchValue}`;
       }
 
       const response = await fetch(url);
@@ -282,7 +284,7 @@ function StaffLookup() {
         setSingleWaiver(data);
       } else {
         if (data.length === 0) {
-          setError("No waivers found for that name.");
+          setError("No waivers found. Try searching by confirmation code or a different last name.");
           return;
         }
 
@@ -395,7 +397,13 @@ function StaffLookup() {
           Search Value
           <input
             value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
+            onChange={(event) =>
+              setSearchValue(
+                searchType === "code"
+                  ? event.target.value.toUpperCase()
+                  : event.target.value
+              )
+            }
             placeholder={
               searchType === "code"
                 ? "Example: LIW-8F3A92"
@@ -409,7 +417,24 @@ function StaffLookup() {
         </button>
       </form>
 
+      {loading && <div className="loading-box">Searching waivers...</div>}
+
       {error && <div className="error-box">{error}</div>}
+
+      {(singleWaiver || waivers.length > 0) && (
+        <button
+          type="button"
+          className="clear-button"
+          onClick={() => {
+            setSearchValue("");
+            setSingleWaiver(null);
+            setWaivers([]);
+            setError("");
+          }}
+        >
+          Clear Results
+        </button>
+      )}
 
       {singleWaiver && renderWaiverCard(singleWaiver)}
 
