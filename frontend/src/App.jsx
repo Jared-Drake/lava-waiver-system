@@ -50,7 +50,7 @@ function WaiverForm() {
   });
 
   const [errors, setErrors] = useState({});
-  const [confirmationCode, setConfirmationCode] = useState("");
+  const [submittedWaiver, setSubmittedWaiver] = useState(null);
   const [loading, setLoading] = useState(false);
 
   function handleChange(event) {
@@ -66,7 +66,7 @@ function WaiverForm() {
     event.preventDefault();
 
     setErrors({});
-    setConfirmationCode("");
+    setSubmittedWaiver(null);
     setLoading(true);
 
     try {
@@ -91,7 +91,7 @@ function WaiverForm() {
         return;
       }
 
-      setConfirmationCode(data.confirmationCode);
+      setSubmittedWaiver(data);
 
       setFormData({
         parentFirstName: "",
@@ -113,11 +113,38 @@ function WaiverForm() {
 
   return (
     <>
-      {confirmationCode && (
+      {submittedWaiver && (
         <div className="success-box">
-          <h2>Waiver Submitted</h2>
-          <p>Your confirmation code is:</p>
-          <strong>{confirmationCode}</strong>
+          <h2>Waiver Submitted Successfully</h2>
+
+          <p className="success-message">
+            Staff can search your waiver by name or confirmation code.
+          </p>
+
+          <div className="success-name-display">
+            {submittedWaiver.parentFirstName} {submittedWaiver.parentLastName}
+          </div>
+
+          <div className="success-details">
+            <p>
+              <strong>Participant:</strong> {submittedWaiver.participantFirstName}{" "}
+              {submittedWaiver.participantLastName}
+            </p>
+            <p>
+              <strong>Expires:</strong> {submittedWaiver.expiresAt}
+            </p>
+            <p>
+              <strong>Confirmation Code:</strong> {submittedWaiver.confirmationCode}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => setSubmittedWaiver(null)}
+          >
+            Submit Another Waiver
+          </button>
         </div>
       )}
 
