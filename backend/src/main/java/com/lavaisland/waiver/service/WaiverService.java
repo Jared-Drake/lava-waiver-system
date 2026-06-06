@@ -1,5 +1,8 @@
 package com.lavaisland.waiver.service;
 
+import com.lavaisland.waiver.dto.WaiverCreateRequest;
+import com.lavaisland.waiver.dto.WaiverResponse;
+import com.lavaisland.waiver.mapper.WaiverMapper;
 import com.lavaisland.waiver.model.Waiver;
 import com.lavaisland.waiver.repository.WaiverRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,9 @@ public class WaiverService {
         this.waiverRepository = waiverRepository;
     }
 
-    public Waiver createWaiver(Waiver waiver) {
+    public WaiverResponse createWaiver(WaiverCreateRequest request) {
+        Waiver waiver = WaiverMapper.toEntity(request);
+
         waiver.setSigned(true);
         waiver.setSignedAt(LocalDateTime.now());
         waiver.setExpiresAt(LocalDate.now().plusYears(1));
@@ -28,7 +33,8 @@ public class WaiverService {
             waiver.getParticipants().forEach(participant -> participant.setWaiver(waiver));
         }
 
-        return waiverRepository.save(waiver);
+        Waiver savedWaiver = waiverRepository.save(waiver);
+        return WaiverMapper.toResponse(savedWaiver);
     }
 
     private String generateConfirmationCode() {
@@ -38,21 +44,32 @@ public class WaiverService {
                 .toUpperCase();
     }
 
-    public List<Waiver> getAllWaivers() {
-        return waiverRepository.findAll();
+    public List<WaiverResponse> getAllWaivers() {
+        return waiverRepository.findAll()
+                .stream()
+                .map(WaiverMapper::toResponse)
+                .toList();
     }
 
-    public List<Waiver> searchByParentLastName(String lastName) {
-        return waiverRepository.findByParentLastNameContainingIgnoreCase(lastName);
+    public List<WaiverResponse> searchByParentLastName(String lastName) {
+        return waiverRepository.findByParentLastNameContainingIgnoreCase(lastName)
+                .stream()
+                .map(WaiverMapper::toResponse)
+                .toList();
     }
 
-    public List<Waiver> searchByParticipantLastName(String lastName) {
-        return waiverRepository.findDistinctByParticipantsLastNameContainingIgnoreCase(lastName);
+    public List<WaiverResponse> searchByParticipantLastName(String lastName) {
+        return waiverRepository.findDistinctByParticipantsLastNameContainingIgnoreCase(lastName)
+                .stream()
+                .map(WaiverMapper::toResponse)
+                .toList();
     }
 
-    public Waiver findByConfirmationCode(String confirmationCode) {
-        return waiverRepository.findByConfirmationCode(confirmationCode)
+    public WaiverResponse findByConfirmationCode(String confirmationCode) {
+        Waiver waiver = waiverRepository.findByConfirmationCode(confirmationCode)
                 .orElseThrow(() -> new RuntimeException("Waiver not found with confirmation code: " + confirmationCode));
+
+        return WaiverMapper.toResponse(waiver);
     }
 
     public boolean isWaiverValid(Waiver waiver) {

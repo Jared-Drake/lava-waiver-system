@@ -1,9 +1,10 @@
 package com.lavaisland.waiver.controller;
 
-import com.lavaisland.waiver.model.Waiver;
+import com.lavaisland.waiver.dto.WaiverCreateRequest;
+import com.lavaisland.waiver.dto.WaiverResponse;
 import com.lavaisland.waiver.service.WaiverService;
-import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,27 +20,27 @@ public class WaiverController {
     }
 
     @PostMapping
-    public Waiver createWaiver(@Valid @RequestBody Waiver waiver) {
-        return waiverService.createWaiver(waiver);
+    public WaiverResponse createWaiver(@Valid @RequestBody WaiverCreateRequest request) {
+        return waiverService.createWaiver(request);
     }
 
     @GetMapping
-    public List<Waiver> getAllWaivers() {
+    public List<WaiverResponse> getAllWaivers() {
         return waiverService.getAllWaivers();
     }
 
     @GetMapping("/search/parent")
-    public List<Waiver> searchByParentLastName(@RequestParam String lastName) {
+    public List<WaiverResponse> searchByParentLastName(@RequestParam String lastName) {
         return waiverService.searchByParentLastName(lastName);
     }
 
     @GetMapping("/search/participant")
-    public List<Waiver> searchByParticipantLastName(@RequestParam String lastName) {
+    public List<WaiverResponse> searchByParticipantLastName(@RequestParam String lastName) {
         return waiverService.searchByParticipantLastName(lastName);
     }
 
     @GetMapping("/code/{confirmationCode}")
-    public Waiver getByConfirmationCode(@PathVariable String confirmationCode) {
+    public WaiverResponse getByConfirmationCode(@PathVariable String confirmationCode) {
         return waiverService.findByConfirmationCode(confirmationCode);
     }
 }
