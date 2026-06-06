@@ -1,5 +1,6 @@
 package com.lavaisland.waiver.service;
 
+import com.lavaisland.waiver.exception.WaiverNotFoundException;
 import com.lavaisland.waiver.dto.WaiverCreateRequest;
 import com.lavaisland.waiver.dto.WaiverResponse;
 import com.lavaisland.waiver.mapper.WaiverMapper;
@@ -67,7 +68,7 @@ public class WaiverService {
 
     public WaiverResponse findByConfirmationCode(String confirmationCode) {
         Waiver waiver = waiverRepository.findByConfirmationCode(confirmationCode)
-                .orElseThrow(() -> new RuntimeException("Waiver not found with confirmation code: " + confirmationCode));
+                .orElseThrow(() -> new WaiverNotFoundException(confirmationCode));
 
         return WaiverMapper.toResponse(waiver);
     }
