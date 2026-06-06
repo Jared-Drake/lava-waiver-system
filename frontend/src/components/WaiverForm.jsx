@@ -51,6 +51,19 @@ function WaiverForm() {
   }
 
   function addParticipant() {
+    if (formData.participants.length >= 10) {
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        participants: "A waiver can include up to 10 participants.",
+      }));
+      return;
+    }
+
+    setErrors((previousErrors) => ({
+      ...previousErrors,
+      participants: "",
+    }));
+
     setFormData((previousData) => ({
       ...previousData,
       participants: [
@@ -153,6 +166,7 @@ function WaiverForm() {
               name="parentFirstName"
               value={formData.parentFirstName}
               onChange={handleChange}
+              maxLength="50"
             />
             {errors.parentFirstName && <span>{errors.parentFirstName}</span>}
           </label>
@@ -163,6 +177,7 @@ function WaiverForm() {
               name="parentLastName"
               value={formData.parentLastName}
               onChange={handleChange}
+              maxLength="50"
             />
             {errors.parentLastName && <span>{errors.parentLastName}</span>}
           </label>
@@ -171,13 +186,25 @@ function WaiverForm() {
         <div className="grid">
           <label>
             Email
-            <input name="email" value={formData.email} onChange={handleChange} />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              maxLength="100"
+            />
             {errors.email && <span>{errors.email}</span>}
           </label>
 
           <label>
             Phone
-            <input name="phone" value={formData.phone} onChange={handleChange} />
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              maxLength="20"
+            />
             {errors.phone && <span>{errors.phone}</span>}
           </label>
         </div>
@@ -203,6 +230,7 @@ function WaiverForm() {
           type="button"
           className="secondary-button"
           onClick={addParticipant}
+          disabled={formData.participants.length >= 10}
         >
           Add Another Participant
         </button>

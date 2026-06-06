@@ -28,6 +28,7 @@ function ParticipantCard({
             name="firstName"
             value={participant.firstName}
             onChange={(event) => onParticipantChange(index, event)}
+            maxLength="50"
           />
         </label>
 
@@ -37,6 +38,7 @@ function ParticipantCard({
             name="lastName"
             value={participant.lastName}
             onChange={(event) => onParticipantChange(index, event)}
+            maxLength="50"
           />
         </label>
       </div>
@@ -48,6 +50,7 @@ function ParticipantCard({
           name="dateOfBirth"
           value={participant.dateOfBirth}
           onChange={(event) => onParticipantChange(index, event)}
+          max={new Date().toISOString().split("T")[0]}
         />
       </label>
     </div>
