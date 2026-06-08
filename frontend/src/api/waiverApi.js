@@ -10,6 +10,7 @@ export async function createWaiver(formData) {
     body: JSON.stringify(formData),
   });
 
+   // Default to an empty object in case the response does not contain JSON.
   let data = {};
 
   try {
@@ -18,6 +19,7 @@ export async function createWaiver(formData) {
     data = {};
   }
 
+    // Throw the backend error data when the request is unsuccessful.
   if (!response.ok) {
     throw data;
   }

@@ -1,3 +1,4 @@
+// Displays and manages the form fields for one participant.
 function ParticipantCard({
   participant,
   index,

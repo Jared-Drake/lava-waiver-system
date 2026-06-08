@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createWaiver } from "../api/waiverApi";
 import ParticipantCard from "./ParticipantCard";
 
+// Default values used for a new waiver form.
 const emptyForm = {
   parentFirstName: "",
   parentLastName: "",
@@ -18,11 +19,13 @@ const emptyForm = {
 };
 
 function WaiverForm() {
+  // Store the form data, validation errors, submission result, and loading state.
   const [formData, setFormData] = useState(emptyForm);
   const [errors, setErrors] = useState({});
   const [submittedWaiver, setSubmittedWaiver] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Update a parent information or agreement field.
   function handleChange(event) {
     const { name, value, type, checked } = event.target;
 
@@ -32,6 +35,7 @@ function WaiverForm() {
     }));
   }
 
+  // Update a field for a specific participant.
   function handleParticipantChange(index, event) {
     const { name, value } = event.target;
 
@@ -50,6 +54,7 @@ function WaiverForm() {
     });
   }
 
+  // Add another participant while enforcing the maximum limit.
   function addParticipant() {
     if (formData.participants.length >= 10) {
       setErrors((previousErrors) => ({
@@ -77,6 +82,7 @@ function WaiverForm() {
     }));
   }
 
+  // Remove the selected participant from the form.
   function removeParticipant(index) {
     setFormData((previousData) => ({
       ...previousData,
@@ -84,6 +90,7 @@ function WaiverForm() {
     }));
   }
 
+  // Send the completed waiver to the backend.
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -99,7 +106,10 @@ function WaiverForm() {
     } catch (error) {
       setErrors(
         error instanceof Error
-          ? { general: "Something went wrong. Make sure the backend is running." }
+          ? {
+              general:
+                "Something went wrong. Make sure the backend is running.",
+            }
           : error
       );
     } finally {
