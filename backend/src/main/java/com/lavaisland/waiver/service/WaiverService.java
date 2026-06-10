@@ -7,6 +7,7 @@ import com.lavaisland.waiver.mapper.WaiverMapper;
 import com.lavaisland.waiver.model.Waiver;
 import com.lavaisland.waiver.repository.WaiverRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class WaiverService {
         this.waiverRepository = waiverRepository;
     }
 
+    @Transactional
     public WaiverResponse createWaiver(WaiverCreateRequest request) {
         Waiver waiver = WaiverMapper.toEntity(request);
 
@@ -45,6 +47,7 @@ public class WaiverService {
                 .toUpperCase();
     }
 
+    @Transactional(readOnly = true)
     public List<WaiverResponse> getAllWaivers() {
         return waiverRepository.findAll()
                 .stream()
@@ -52,6 +55,7 @@ public class WaiverService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<WaiverResponse> searchByParentLastName(String lastName) {
         return waiverRepository.findByParentLastNameContainingIgnoreCase(lastName)
                 .stream()
@@ -59,6 +63,7 @@ public class WaiverService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<WaiverResponse> searchByParticipantLastName(String lastName) {
         return waiverRepository.findDistinctByParticipantsLastNameContainingIgnoreCase(lastName)
                 .stream()
@@ -66,6 +71,7 @@ public class WaiverService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public WaiverResponse findByConfirmationCode(String confirmationCode) {
         Waiver waiver = waiverRepository.findByConfirmationCode(confirmationCode)
                 .orElseThrow(() -> new WaiverNotFoundException(confirmationCode));
